@@ -1,2 +1,7 @@
 print 1*5+2;
 print 5*(3+8)*((8+2)*(3-1));
+print 50%21;
+print pow(3, 5);
+print pow(2<<3, 5);
+print 2<<3+5;
+print 5|pow(3, 2);

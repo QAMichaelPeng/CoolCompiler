@@ -14,7 +14,9 @@ if ERRORLEVEL 0 (
 cls
 csc /out:out\CalculatorMain.exe /r:%ANTLR_PATH%\Antlr3.Runtime.dll  /r:%ANTLR_PATH%\Antlr3.Runtime.Debug.dll CalculatorMain.cs %GENERATED%\CalculatorLexer.cs %GENERATED%\CalculatorParser.cs  CalculatorLexer.cs CalculatorParser.cs
 copy /d %ANTLR_PATH%\* %OUT%
+
     if exist %OUT%\CalculatorMain.exe (
+        cls
         %OUT%\CalculatorMain.exe < test.txt
     )
 )
