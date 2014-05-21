@@ -8,13 +8,13 @@ for %%i in (%OUT% %GENERATED%) do (
     if not exist %%i mkdir %%i
 )
 
-%ANTLR_PATH%\Antlr3.exe Calculator.g -o %GENERATED% 2> Calculator.err
+%ANTLR_PATH%\Antlr3.exe -trace -verbose Calculator.g -o %GENERATED% 2> Calculator.err
 
 if ERRORLEVEL 0 (
 cls
-csc /out:out\CalculatorMain.exe /r:%ANTLR_PATH%\Antlr3.Runtime.dll CalculatorMain.cs %GENERATED%\CalculatorLexer.cs %GENERATED%\CalculatorParser.cs  CalculatorLexer.cs CalculatorParser.cs
+csc /out:out\CalculatorMain.exe /r:%ANTLR_PATH%\Antlr3.Runtime.dll  /r:%ANTLR_PATH%\Antlr3.Runtime.Debug.dll CalculatorMain.cs %GENERATED%\CalculatorLexer.cs %GENERATED%\CalculatorParser.cs  CalculatorLexer.cs CalculatorParser.cs
 copy /d %ANTLR_PATH%\* %OUT%
     if exist %OUT%\CalculatorMain.exe (
-        %OUT%\CalculatorMain.exe
+        %OUT%\CalculatorMain.exe < test.txt
     )
 )

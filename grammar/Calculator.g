@@ -3,6 +3,11 @@ grammar Calculator;
 options {
     language=CSharp3;
 }
+@lexer::namespace{Calculator}
+@parser::namespace{Calculator}
+@header {
+using System;
+}
 
 public stat:statement_list;
 
@@ -12,15 +17,15 @@ public statement: expr_statement
     |print_statement
     ;
 
-public print_statement: PRINT expr ';';
+public print_statement: PRINT a=expr ';'{Console.WriteLine(a);};
 public expr_statement: expr ';';
-public expr: addexpr;
+public expr returns[int value]: a=addexpr{$value=a;};
 
-public addexpr: mulexpr ('+'|'-' mulexpr)*;
+public addexpr returns[int value]: a=mulexpr{$value=a;} ('+' b=mulexpr{$value+=b;}|'-' b= mulexpr{$value-=b;})*;
 
-public mulexpr:term ('*'|'/' term)*;
+public mulexpr returns [int value]:a=term{$value = a;} ('*' b=term{$value*=b;}|'/' term{$value/=b;})*;
 
-term: INT |'(' expr ')';
+term returns[int value] : a=INT {$value=int.Parse($a.text);} |'('b=expr ')'{$value=b;};
 /*
 Lexer rules
 */

@@ -14,7 +14,7 @@ namespace Calculator
             CalculatorLexer lexer = new CalculatorLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             CalculatorParser parser = new CalculatorParser(tokens);
-            parser.expr_statement();
+            parser.stat();
         }
     }
 }
