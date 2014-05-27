@@ -5,6 +5,8 @@ bin/Release
 bin/x64
 generated/
 *.err
+*.tokens
+*.log
 
 # vim files
 *swp
