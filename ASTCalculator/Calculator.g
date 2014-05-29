@@ -6,6 +6,9 @@ options {
     output=AST;
     ASTLabelType=CommonTree;
 }
+tokens {
+FOR_INIT;FOR_CONDITION;FOR_ITER;
+}
 @lexer::namespace{Calculator}
 @parser::namespace{Calculator}
 @parser::members{
@@ -36,13 +39,22 @@ public ifStatement: IF^ LPAREN expr RPAREN statement
 public compoudStartment: LCURLY^ statement* RCURLY;
 
 public declarationStatement: declaration SEMI!;
-public printStatement: PRINT a=expr SEMI!;
+public printStatement: PRINT^ a=expr SEMI!;
 public exprStatement: expr SEMI!;
-public forStatement: FOR LPAREN forInit SEMI forCond SEMI forInit RPAREN statement;
+public forStatement: FOR^ LPAREN forInit SEMI forCond SEMI forIter RPAREN statement;
 
-public forInit: (declaration|exprList)?;
-public forCond: (expr)?;
-public forIterList: (exprList)?;
+public forInit: (a=declaration|a=exprList)?
+-> {a != null}? ^(FOR_INIT $a)
+-> ^(FOR_INIT)
+;
+public forCond: (a=expr)?
+->{a!=null}? ^(FOR_CONDITION $a)
+->^(FOR_CONDITION)
+;
+
+public forIter: (a=exprList)?
+->{a!=null}? ^(FOR_ITER $a)
+->^(FOR_ITER);
 
 
 public declaration: modifiers typeSpec^ varDeclarations;
@@ -71,9 +83,9 @@ public relationexpr: shiftexpr ((LT^
 shiftexpr)*;
 
 public shiftexpr : a=addexpr  (LSHIFT^ b=addexpr|RSHIFT^ b=addexpr)*;
-public addexpr : a=mulexpr (PLUS^ b=mulexpr|MINUS^ b= mulexpr)*;
+public addexpr : mulexpr (PLUS^ mulexpr|MINUS^ mulexpr)*;
 
-public mulexpr :a=unaryExpr (MUL^ b=unaryExpr|DIV^ unaryExpr|MOD^ b=unaryExpr)*;
+public mulexpr :a=unaryExpr (MUL^ unaryExpr|DIV^ unaryExpr|MOD^ unaryExpr)*;
 
 public unaryExpr:INC postfixExpr
 | DEC postfixExpr
@@ -178,3 +190,4 @@ ESC: '\\'
 | '\''
 | '\\'
 );
+COMMENT: '\/\/' ~ ('\r'|'\n')*;
