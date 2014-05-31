@@ -8,6 +8,7 @@ options {
 }
 tokens {
 FOR_INIT;FOR_CONDITION;FOR_ITER;
+ARRAY_DECLARATOR;VARIABLE_DEF;TYPE;
 }
 @lexer::namespace{Calculator}
 @parser::namespace{Calculator}
@@ -57,11 +58,23 @@ public forIter: (a=exprList)?
 ->^(FOR_ITER);
 
 
-public declaration: modifiers typeSpec^ varDeclarations;
+public declaration
+    : m=modifiers t=typeSpec v=varDeclarations[m.Tree, t.Tree]
+    ->varDeclarations
+    ;
 public modifiers: MODIFIER*;
-public varDeclarations: varDeclaration (COMMA varDeclaration)*;
-public varDeclaration: ID declareBrackets varInitializer;
-public declareBrackets: (LBRACK expr RBRACK)*;
+public varDeclarations[CommonTree mods, CommonTree t]: varDeclaration[mods, t] (COMMA varDeclaration[mods, t])*;
+
+public varDeclaration[CommonTree mods, CommonTree t]
+    : ID declareBrackets[t] v=varInitializer
+    ->{v != null && v.Tree != null}? ^(VARIABLE_DEF {$mods} ^(TYPE declareBrackets) ID varInitializer)
+    -> ^(VARIABLE_DEF {$mods} ^(TYPE declareBrackets) ID)
+;
+
+public declareBrackets[CommonTree t]
+    : (LBRACK expr RBRACK)*
+-> ^( {$t} ^(LBRACK expr RBRACK)*);
+
 public varInitializer: (ASSIGN^ initializer)?;
 public initializer: expr;
 public typeSpec: BUILTIN_TYPE;
@@ -175,7 +188,7 @@ COMMA: ',';
 WS:(' '|'\t'|'\r'|'\n'){Skip();};
 PRINT: 'print';
 POW: 'pow';
-ID: ('a'..'z'|'A'..'Z')+;
+ID: ('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
 
 CHAR_LITERAL: '\'' (ESC|~'\'') '\'';
 STRING_LTERRAL: '"' (ESC|~('"'|'\\'))*'"';

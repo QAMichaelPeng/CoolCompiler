@@ -11,11 +11,11 @@ if exist %%i rmdir %%i /q /s
 
 if ERRORLEVEL 0 (
 cls
-csc /debug /out:out\CalculatorMain.exe /define:ANTLR_DEBU /r:%ANTLR_PATH%\Antlr3.Runtime.dll  /r:%ANTLR_PATH%\Antlr3.Runtime.Debug.dll CalculatorMain.cs %GENERATED%\CalculatorLexer.cs %GENERATED%\CalculatorParser.cs  CalculatorLexer.cs CalculatorParser.cs TraceDebugEventListenerEx.cs
+csc /debug /out:out\CalculatorMain.exe /define:ANTLR_DEBU /r:%ANTLR_PATH%\Antlr3.Runtime.dll  /r:%ANTLR_PATH%\Antlr3.Runtime.Debug.dll CalculatorMain.cs %GENERATED%\CalculatorLexer.cs %GENERATED%\CalculatorParser.cs  CalculatorLexer.cs CalculatorParser.cs TraceDebugEventListenerEx.cs >> Calculator.err
 copy /d %ANTLR_PATH%\* %OUT%
 
     if exist %OUT%\CalculatorMain.exe (
         cls
-        %OUT%\CalculatorMain.exe < test.txt
+        %OUT%\CalculatorMain.exe < test.txt > test.log
     )
 )

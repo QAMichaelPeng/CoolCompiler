@@ -8,6 +8,9 @@ namespace Calculator
 {
     class Program
     {
+        private static void ParseTree(ITree tree)
+        {
+        }
         public static void Main(string[] args)
         {
             Stream inputStream = Console.OpenStandardInput();
@@ -17,7 +20,7 @@ namespace Calculator
             CalculatorParser parser = new CalculatorParser(tokens);
             var tree = parser.stat().Tree;
             Console.WriteLine(tree.ToStringTree());
-            //DumpTree(tree, "", "  ");
+            DumpTree(tree, "", "  ");
         }
         public static void DumpTree(ITree tree, String indent, String step)
         {
